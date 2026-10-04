@@ -685,7 +685,10 @@ def build_excel(file_path):
 # =============================================================================
 
 def build_pdf(html_path, pdf_path):
-    # Construct exact replica HTML
+    import html as html_lib
+    def esc(s):
+        return html_lib.escape(str(s)) if s is not None else ""
+
     html = f"""<!DOCTYPE html>
 <html lang="id">
 <head>
@@ -693,8 +696,8 @@ def build_pdf(html_path, pdf_path):
   <title>01 - Analytical & Test Design (QA Technical Test)</title>
   <style>
     @page {{
-      size: A4;
-      margin: 16mm 12mm 16mm 12mm;
+      size: A4 portrait;
+      margin: 14mm 10mm 14mm 10mm;
     }}
     body {{
       font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
@@ -745,14 +748,14 @@ def build_pdf(html_path, pdf_path):
       color: #1F4E79;
       border-bottom: 1.5px solid #CBD5E0;
       padding-bottom: 3px;
-      margin-top: 18px;
+      margin-top: 20px;
       margin-bottom: 8px;
       page-break-after: avoid;
     }}
     h3 {{
       font-size: 10pt;
       color: #2B6CB0;
-      margin-top: 12px;
+      margin-top: 14px;
       margin-bottom: 6px;
       page-break-after: avoid;
     }}
@@ -764,6 +767,7 @@ def build_pdf(html_path, pdf_path):
       border-collapse: collapse;
       margin-bottom: 14px;
       font-size: 8pt;
+      page-break-inside: auto;
     }}
     tr {{
       page-break-inside: avoid;
@@ -810,29 +814,32 @@ def build_pdf(html_path, pdf_path):
       line-height: 1.35;
       page-break-inside: avoid;
     }}
-    .page-break {{ page-break-before: always; }}
+    .page-break {{
+      page-break-before: always;
+      break-before: page;
+    }}
   </style>
 </head>
 <body>
 
   <div class="header-banner">
-    <h1 class="company-title">{DOC_INFO["title"]}</h1>
-    <div class="doc-subtitle">{DOC_INFO["subtitle"]} — {DOC_INFO["section"]}</div>
+    <h1 class="company-title">{esc(DOC_INFO["title"])}</h1>
+    <div class="doc-subtitle">{esc(DOC_INFO["subtitle"])} — {esc(DOC_INFO["section"])}</div>
   </div>
 
   <div class="meta-box">
     <div class="meta-grid">
-      <div class="meta-label">Aplikasi Target:</div><div>{DOC_INFO["target_app"]}</div>
-      <div class="meta-label">Target URL:</div><div>{DOC_INFO["target_url"]}</div>
-      <div class="meta-label">Lingkup Pengujian:</div><div>{DOC_INFO["scope"]}</div>
-      <div class="meta-label">Tanggal Pengujian:</div><div>{DOC_INFO["date"]}</div>
-      <div class="meta-label">Kandidat QA:</div><div>{DOC_INFO["author"]}</div>
-      <div class="meta-label">File Deliverables:</div><div>{DOC_INFO["deliverables"]}</div>
+      <div class="meta-label">Aplikasi Target:</div><div>{esc(DOC_INFO["target_app"])}</div>
+      <div class="meta-label">Target URL:</div><div>{esc(DOC_INFO["target_url"])}</div>
+      <div class="meta-label">Lingkup Pengujian:</div><div>{esc(DOC_INFO["scope"])}</div>
+      <div class="meta-label">Tanggal Pengujian:</div><div>{esc(DOC_INFO["date"])}</div>
+      <div class="meta-label">Kandidat QA:</div><div>{esc(DOC_INFO["author"])}</div>
+      <div class="meta-label">File Deliverables:</div><div>{esc(DOC_INFO["deliverables"])}</div>
     </div>
   </div>
 
   <h2>1. Risk Analysis & Mitigation Matrix</h2>
-  <p>Analisis risiko terhadap 7 area kritis dengan formula <strong>Likelihood (1–3) &times; Impact (1–3)</strong>:</p>
+  <p>Analisis risiko terhadap 7 area kritis dengan formula <strong>Likelihood (1–3) &times; Impact (1–3)</strong>. Diurutkan dari skor tertinggi:</p>
 
   <table>
     <thead>
@@ -853,13 +860,13 @@ def build_pdf(html_path, pdf_path):
         badge = "badge-high" if r["score"] >= 6 else "badge-med"
         html += f"""      <tr>
         <td class="text-center">{idx}</td>
-        <td class="text-center text-bold">{r["id"]}</td>
-        <td class="text-bold">{r["area"]}</td>
+        <td class="text-center text-bold">{esc(r["id"])}</td>
+        <td class="text-bold">{esc(r["area"])}</td>
         <td class="text-center">{r["likelihood"]}</td>
         <td class="text-center">{r["impact"]}</td>
         <td class="text-center text-bold">{r["score"]}</td>
-        <td class="text-center"><span class="badge {badge}">{r["level"]}</span></td>
-        <td>{r["reason"]}<br><strong>Mitigasi:</strong> {r["mitigation"]}</td>
+        <td class="text-center"><span class="badge {badge}">{esc(r["level"])}</span></td>
+        <td>{esc(r["reason"])}<br><strong>Mitigasi:</strong> {esc(r["mitigation"])}</td>
       </tr>
 """
     html += """    </tbody>
@@ -877,9 +884,9 @@ def build_pdf(html_path, pdf_path):
             ex_str = "\n\n    Examples:\n      | " + " | ".join(scn["examples"][0].keys()) + " |\n"
             for ex in scn["examples"]:
                 ex_str += "      | " + " | ".join(str(v) for v in ex.values()) + " |\n"
-        html += f"""  <div class="code-block"><span style="color:#FAF089;">{scn["tags"]}</span>
-<span style="color:#63B3ED; font-weight:bold;">{scn["type"]}:</span> {scn["title"]}
-{steps_str}{ex_str}</div>
+        html += f"""  <div class="code-block"><span style="color:#FAF089;">{esc(scn["tags"])}</span>
+<span style="color:#63B3ED; font-weight:bold;">{esc(scn["type"])}:</span> {esc(scn["title"])}
+{esc(steps_str)}{esc(ex_str)}</div>
 """
 
     html += """  <div class="page-break"></div>
@@ -903,15 +910,15 @@ def build_pdf(html_path, pdf_path):
 """
     for tc in TEST_CASES:
         p_badge = "badge-high" if tc["priority"] == "High" else "badge-med"
-        steps_formatted = tc["steps"].replace("\n", "<br>")
+        steps_formatted = esc(tc["steps"]).replace("\n", "<br>")
         html += f"""      <tr>
-        <td class="text-center text-bold">{tc["id"]}</td>
-        <td class="text-bold">{tc["title"]}</td>
-        <td><strong>Precondition:</strong> {tc["precondition"]}<br><strong>Data:</strong> {tc["test_data"]}</td>
+        <td class="text-center text-bold">{esc(tc["id"])}</td>
+        <td class="text-bold">{esc(tc["title"])}</td>
+        <td><strong>Precondition:</strong> {esc(tc["precondition"])}<br><strong>Data:</strong> {esc(tc["test_data"])}</td>
         <td>{steps_formatted}</td>
-        <td>{tc["expected"]}</td>
-        <td class="text-center"><span class="badge {p_badge}">{tc["priority"]}</span></td>
-        <td>{tc["technique"]}<br><small style="color:#718096;">{tc["link"]}</small></td>
+        <td>{esc(tc["expected"])}</td>
+        <td class="text-center"><span class="badge {p_badge}">{esc(tc["priority"])}</span></td>
+        <td>{esc(tc["technique"])}<br><small style="color:#718096;">{esc(tc["link"])}</small></td>
       </tr>
 """
     html += """    </tbody>
@@ -937,11 +944,11 @@ def build_pdf(html_path, pdf_path):
     for ep in TECH_EP:
         b_class = "badge-valid" if ep["status"] == "Valid" else "badge-invalid"
         html += f"""      <tr>
-        <td class="text-center text-bold">{ep["partisi"]}</td>
-        <td>{ep["rentang"]}</td>
-        <td>{ep["contoh"]}</td>
-        <td class="text-center"><span class="badge {b_class}">{ep["status"]}</span></td>
-        <td>{ep["expected"]}</td>
+        <td class="text-center text-bold">{esc(ep["partisi"])}</td>
+        <td>{esc(ep["rentang"])}</td>
+        <td>{esc(ep["contoh"])}</td>
+        <td class="text-center"><span class="badge {b_class}">{esc(ep["status"])}</span></td>
+        <td>{esc(ep["expected"])}</td>
       </tr>
 """
     html += """    </tbody>
@@ -963,11 +970,11 @@ def build_pdf(html_path, pdf_path):
     for bva in TECH_BVA:
         b_class = "badge-valid" if bva["status"] == "Valid" else "badge-invalid"
         html += f"""      <tr>
-        <td class="text-center text-bold">{bva["titik"]}</td>
-        <td>{bva["nilai"]}</td>
-        <td>{bva["representasi"]}</td>
-        <td class="text-center"><span class="badge {b_class}">{bva["status"]}</span></td>
-        <td>{bva["expected"]}</td>
+        <td class="text-center text-bold">{esc(bva["titik"])}</td>
+        <td>{esc(bva["nilai"])}</td>
+        <td>{esc(bva["representasi"])}</td>
+        <td class="text-center"><span class="badge {b_class}">{esc(bva["status"])}</span></td>
+        <td>{esc(bva["expected"])}</td>
       </tr>
 """
     html += """    </tbody>
@@ -990,8 +997,8 @@ def build_pdf(html_path, pdf_path):
 """
     for cond, rules in TECH_DT["conditions"]:
         html += f"""      <tr>
-        <td class="text-bold">{cond}</td>
-""" + "".join(f"<td class='text-center'>{r}</td>" for r in rules) + """
+        <td class="text-bold">{esc(cond)}</td>
+""" + "".join(f"<td class='text-center'>{esc(r)}</td>" for r in rules) + """
       </tr>
 """
     html += """      <tr style="background-color: #E2E8F0;">
@@ -1006,7 +1013,7 @@ def build_pdf(html_path, pdf_path):
             else:
                 cells += "<td class='text-center'></td>"
         html += f"""      <tr>
-        <td>{act}</td>{cells}
+        <td>{esc(act)}</td>{cells}
       </tr>
 """
     html += """    </tbody>
@@ -1026,10 +1033,10 @@ def build_pdf(html_path, pdf_path):
 """
     for st in TECH_ST:
         html += f"""      <tr>
-        <td class="text-bold">{st["current"]}</td>
-        <td>{st["trigger"]}</td>
-        <td>{st["action"]}</td>
-        <td class="text-bold">{st["next"]}</td>
+        <td class="text-bold">{esc(st["current"])}</td>
+        <td>{esc(st["trigger"])}</td>
+        <td>{esc(st["action"])}</td>
+        <td class="text-bold">{esc(st["next"])}</td>
       </tr>
 """
     html += """    </tbody>
@@ -1052,8 +1059,8 @@ def build_pdf(html_path, pdf_path):
     for item in OUT_OF_SCOPE:
         html += f"""          <tr>
             <td class="text-center">{item["no"]}</td>
-            <td class="text-bold">{item["fitur"]}</td>
-            <td>{item["alasan"]}</td>
+            <td class="text-bold">{esc(item["fitur"])}</td>
+            <td>{esc(item["alasan"])}</td>
           </tr>
 """
     html += """        </tbody>
@@ -1074,8 +1081,8 @@ def build_pdf(html_path, pdf_path):
     for item in ASSUMPTIONS:
         html += f"""          <tr>
             <td class="text-center">{item["no"]}</td>
-            <td class="text-bold">{item["aspek"]}</td>
-            <td>{item["deskripsi"]}</td>
+            <td class="text-bold">{esc(item["aspek"])}</td>
+            <td>{esc(item["deskripsi"])}</td>
           </tr>
 """
     html += """        </tbody>
@@ -1090,24 +1097,34 @@ def build_pdf(html_path, pdf_path):
     with open(html_path, "w", encoding="utf-8") as f:
         f.write(html)
 
-    chrome_paths = [
-        r"C:\Program Files\Google\Chrome\Application\chrome.exe",
-        r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
-    ]
-    chrome_bin = next((p for p in chrome_paths if os.path.exists(p)), None)
-    if chrome_bin:
-        cmd = [
-            chrome_bin,
-            "--headless",
-            "--disable-gpu",
-            "--run-all-compositor-stages-before-draw",
-            f"--print-to-pdf={pdf_path}",
-            html_path
-        ]
-        subprocess.run(cmd, check=True)
-        print(f"PDF saved successfully at: {pdf_path}")
-        if os.path.exists(html_path):
-            os.remove(html_path)
+    from selenium import webdriver
+    import base64
+    
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless=new')
+    options.add_argument('--disable-gpu')
+    driver = webdriver.Chrome(options=options)
+    
+    abs_url = "file:///" + os.path.abspath(html_path).replace("\\", "/")
+    driver.get(abs_url)
+    
+    pdf_params = {
+        'printBackground': True,
+        'paperWidth': 8.27,
+        'paperHeight': 11.69,
+        'marginTop': 0.3,
+        'marginBottom': 0.3,
+        'marginLeft': 0.3,
+        'marginRight': 0.3,
+        'preferCSSPageSize': True
+    }
+    result = driver.execute_cdp_cmd('Page.printToPDF', pdf_params)
+    with open(pdf_path, 'wb') as f:
+        f.write(base64.b64decode(result['data']))
+    driver.quit()
+    print(f"PDF saved successfully via Selenium CDP at: {pdf_path}")
+    if os.path.exists(html_path):
+        os.remove(html_path)
 
 if __name__ == "__main__":
     excel_path = "c:/genesis-sage-automation/logique-qa-assessment/docs/01-test-design.xlsx"
