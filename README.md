@@ -46,7 +46,8 @@ logique-qa-assessment/
 │   ├── 01-test-design.xlsx         # Bagian 1: Desain test case format spreadsheet (Excel)
 │   ├── 01-test-design.pdf          # Bagian 1: Desain test case format dokumen cetak (PDF)
 │   ├── 02-automation-result.md     # Ringkasan metrik eksekusi otomasi Bagian 2
-│   ├── 03-bug-report.md            # Bagian 3: Laporan 7 bug temuan exploratory testing
+│   ├── 03-bug-report.md            # Bagian 3: Laporan 7 bug temuan exploratory testing (Markdown)
+│   ├── 03-bug-report.xlsx          # Bagian 3: Laporan bug spreadsheet Excel (lengkap dengan screenshot tertanam)
 │   └── evidence/                   # Screenshot bukti visual bug Bagian 3
 │       ├── BUG-001-cart-subtotal-zero.png
 │       ├── BUG-002-inverted-price-sorting.png
@@ -102,7 +103,7 @@ Semua instruksi pada dokumen soal teknis telah dipenuhi pada lokasi file berikut
 | **Bagian 1** (35%) | Test Case Document (Excel, PDF, MD) | [`docs/01-test-design.xlsx`](file:///c:/genesis-sage-automation/logique-qa-assessment/docs/01-test-design.xlsx)<br>[`docs/01-test-design.pdf`](file:///c:/genesis-sage-automation/logique-qa-assessment/docs/01-test-design.pdf)<br>[`docs/01-test-design.md`](file:///c:/genesis-sage-automation/logique-qa-assessment/docs/01-test-design.md) | ✅ **100% Selesai (Paritas Penuh)** |
 | **Bagian 2** (35%) | Framework & Script Automation | [`tests/`](file:///c:/genesis-sage-automation/logique-qa-assessment/tests/) & [`pages/`](file:///c:/genesis-sage-automation/logique-qa-assessment/pages/) | ✅ **100% Selesai (5/5 PASS)** |
 | **Bagian 2** (35%) | Test Report (HTML Report) | [`results/report.html`](file:///c:/genesis-sage-automation/logique-qa-assessment/results/report.html)<br>[`results/log.html`](file:///c:/genesis-sage-automation/logique-qa-assessment/results/log.html) | ✅ **Ter-generate Sempurna** |
-| **Bagian 3** (30%) | Bug Hunting Report + Evidence | [`docs/03-bug-report.md`](file:///c:/genesis-sage-automation/logique-qa-assessment/docs/03-bug-report.md)<br>[`docs/evidence/`](file:///c:/genesis-sage-automation/logique-qa-assessment/docs/evidence/) | ✅ **7 Bug Terverifikasi** |
+| **Bagian 3** (30%) | Bug Hunting Report + Evidence | [`docs/03-bug-report.xlsx`](file:///c:/genesis-sage-automation/logique-qa-assessment/docs/03-bug-report.xlsx) *(Excel + Embedded Screenshots)*<br>[`docs/03-bug-report.md`](file:///c:/genesis-sage-automation/logique-qa-assessment/docs/03-bug-report.md)<br>[`docs/evidence/`](file:///c:/genesis-sage-automation/logique-qa-assessment/docs/evidence/) | ✅ **7 Bug Terverifikasi** |
 | **Bagian 4** (Bonus) | Script Performance Test (k6) | [`performance/load_test_products.js`](file:///c:/genesis-sage-automation/logique-qa-assessment/performance/load_test_products.js) | ✅ **Siap Dijalankan** |
 
 ---
