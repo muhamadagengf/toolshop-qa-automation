@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+
+# Robot Framework Test Execution Results (generated during runs)
+results/
+output.xml
+log.html
+report.html
+*.png
+*.jpg
+*.jpeg
+
+# Operating System Files
+Thumbs.db
+.DS_Store
