@@ -1,0 +1,34 @@
+[
+  {
+    "test_id": "TC_LOG_NEG_01",
+    "description": "Login gagal karena password salah",
+    "email": "qa.candidate.registered@toolshop-testing.org",
+    "password": "WrongPassword99!",
+    "expected_status": "FAILED",
+    "expected_message": "Invalid email or password"
+  },
+  {
+    "test_id": "TC_LOG_NEG_02",
+    "description": "Login gagal karena email belum terdaftar",
+    "email": "unregistered.candidate.2026@domaintest.org",
+    "password": "ValidPassword@123",
+    "expected_status": "FAILED",
+    "expected_message": "Invalid email or password"
+  },
+  {
+    "test_id": "TC_LOG_NEG_03",
+    "description": "Login gagal validasi client-side email kosong",
+    "email": "",
+    "password": "ValidPassword@123",
+    "expected_status": "FAILED",
+    "expected_message": "Email is required"
+  },
+  {
+    "test_id": "TC_LOG_NEG_04",
+    "description": "Login gagal validasi client-side password kosong",
+    "email": "qa.candidate.registered@toolshop-testing.org",
+    "password": "",
+    "expected_status": "FAILED",
+    "expected_message": "Password is required"
+  }
+]
