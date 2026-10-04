@@ -12,6 +12,9 @@ report.html
 *.png
 *.jpg
 *.jpeg
+!docs/evidence/*.png
+!docs/evidence/*.jpg
+
 
 # Operating System Files
 Thumbs.db
