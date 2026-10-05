@@ -1,289 +1,167 @@
-# Logique Digital Indonesia — QA Technical Assessment
+# Technical Assessment QA Automation — Practice Software Testing
 
-[![Robot Framework](https://img.shields.io/badge/Framework-Robot%20Framework%207.0-blue.svg)](https://robotframework.org/)
-[![SeleniumLibrary](https://img.shields.io/badge/Library-SeleniumLibrary%206.2.0-green.svg)](https://robotframework.org/SeleniumLibrary/)
-[![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11-yellow.svg)](https://www.python.org/)
-[![Tests](https://img.shields.io/badge/Automation%20Status-5%2F5%20PASS%20(100%25)-success.svg)]()
-[![License](https://img.shields.io/badge/License-MIT-lightgrey.svg)]()
-
-Repositori ini berisi solusi lengkap untuk **Technical Assessment QA Automation Engineer** di **PT. LOGIQUE Digital Indonesia**. Seluruh bagian teknis inti (**Bagian 1: Test Design**, **Bagian 2: Web Automation Framework**, dan **Bagian 3: Bug Hunting Report**) telah diselesaikan secara komprehensif, modular, dan mengikuti standar industri *quality engineering*.
+Repositori ini berisi pengerjaan Technical Assessment QA untuk web e-commerce [Practice Software Testing (Toolshop)](https://practicesoftwaretesting.com). Pengujian mencakup perancangan test case (BDD), implementasi automation framework berbasis Robot Framework, dan laporan exploratory bug hunting.
 
 ---
 
-## 📑 Daftar Isi
-1. [Struktur Proyek](#-struktur-proyek)
-2. [Pemetaan Deliverables](#-pemetaan-deliverables)
-3. [Prasyarat & Lingkungan](#-prasyarat--lingkungan)
-4. [Panduan Instalasi & Setup](#-panduan-instalasi--setup)
-5. [Cara Menjalankan Test (1-Command Run)](#-cara-menjalankan-test-1-command-run)
-6. [Fleksibilitas Headed vs Headless](#-fleksibilitas-headed-vs-headless)
-7. [Cara Melihat Test Report](#-cara-melihat-test-report)
-8. [Justifikasi Pemilihan Tools & Library](#-justifikasi-pemilihan-tools--library)
-9. [Asumsi & Batasan (Assumptions & Limitations)](#-asumsi--batasan-assumptions--limitations)
-10. [Checklist Verifikasi Sebelum Submit](#-checklist-verifikasi-sebelum-submit)
+## 📁 Struktur Repositori
 
----
-
-## 📂 Struktur Proyek
-
-Arsitektur repositori dirancang dengan prinsip **Page Object Model (POM)** yang bersih dan pemisahan *concern* yang ketat:
+Proyek ini menggunakan pola **Page Object Model (POM)** untuk memisahkan locator/interaksi UI dengan logika skenario pengujian:
 
 ```text
-logique-qa-assessment/
-│
-├── .gitignore                      # Mengabaikan file temporary & build artifacts
-├── README.md                       # Dokumentasi utama proyek & panduan eksekusi
-├── requirements.txt                # Dependensi Python & library automation
-│
-├── config/                         # Konfigurasi environment & parameter global
-│   └── env_config.robot            # URL web target, kredensial default, timeout global
-│
-├── data/                           # Data-driven test files
-│   └── login_test_data.json        # Dataset pengujian login (skenario positif & negatif)
-│
-├── docs/                           # Dokumentasi deliverables resmi
-│   ├── 01-test-design.md           # Bagian 1: Desain test case lengkap (Markdown)
-│   ├── 01-test-design.xlsx         # Bagian 1: Desain test case format spreadsheet (Excel)
-│   ├── 01-test-design.pdf          # Bagian 1: Desain test case format dokumen cetak (PDF)
-│   ├── 02-automation-result.md     # Ringkasan metrik eksekusi otomasi Bagian 2
-│   ├── 03-bug-report.md            # Bagian 3: Laporan 7 bug temuan exploratory testing (Markdown)
-│   ├── 03-bug-report.xlsx          # Bagian 3: Laporan bug spreadsheet Excel (lengkap dengan screenshot tertanam)
-│   └── evidence/                   # Screenshot bukti visual bug Bagian 3
-│       ├── BUG-001-cart-subtotal-zero.png
-│       ├── BUG-002-inverted-price-sorting.png
-│       ├── BUG-003-swapped-country-state-labels.png
-│       ├── BUG-004-future-date-of-birth.png
-│       ├── BUG-005-duplicate-total-table-header.png
-│       ├── BUG-006-broken-logo-asset-404.png
-│       ├── BUG-007-typo-contact-massage.png
-│       └── BUG-007-typos-related-products.png
-│
-├── features/                       # Skenario BDD / Gherkin
-│   └── auth_profile_navigation.feature # 12 skenario Gherkin (Registrasi, Login, Profil, Navigasi)
-│
-├── pages/                          # Page Object Model (POM) Berbasis Keyword
-│   ├── Common.robot                # Browser lifecycle, helper interaksi, headed switcher
-│   ├── HomePage.robot              # Komponen halaman beranda, katalog produk & navigasi
-│   ├── LoginPage.robot             # Form login, submit button, pesan validasi/error
-│   ├── RegisterPage.robot          # Form registrasi komprehensif & validasi
-│   ├── ProfilePage.robot           # Halaman akun pengguna, edit profil, update verifikasi
-│   ├── ProductDetailPage.robot    # Detail produk, kuantitas, add-to-cart, toast alert
-│   └── CheckoutPage.robot          # Keranjang belanja, stepper multi-step, payment & invoice
-│
-├── resources/                      # Library kustom & utility pendukung
-│   └── DataHelper.py               # Generator data dinamis (timestamp email, unique data)
-│
-├── results/                        # Output hasil eksekusi Robot Framework (HTML & XML)
-│   ├── log.html                    # Log hierarki keyword & step-by-step
-│   ├── report.html                 # Ringkasan eksekutif status PASS/FAIL
-│   └── output.xml                  # Machine-readable output untuk integrasi CI/CD
-│
-├── scripts/                        # Utility developer
-│   └── generate_unified_test_design.py # Script sinkronisasi 100% paritas MD -> Excel & PDF
-│
-└── tests/                          # Test Suite Robot Framework
-    ├── 01_register.robot           # Otomasi alur pendaftaran akun baru
-    ├── 02_login_data_driven.robot  # Otomasi pengujian login data-driven (JSON)
-    ├── 03_edit_profile.robot       # Otomasi alur modifikasi profil pengguna
-    └── 04_e2e_checkout.robot       # Otomasi End-to-End (E2E) pencarian hingga checkout
+├── config/
+│   └── env_config.robot            # Konfigurasi environment (URL, timeout, browser)
+├── data/
+│   └── login_test_data.json        # Data pengujian DDT untuk skenario login
+├── docs/
+│   ├── 01-test-design.md           # Bagian 1: Test Design & BDD Scenarios (Markdown)
+│   ├── 01-test-design.xlsx         # Bagian 1: Versi Excel spreadsheet
+│   ├── 01-test-design.pdf          # Bagian 1: Versi PDF
+│   ├── 02-automation-result.md     # Bagian 2: Hasil eksekusi & detail otomasi
+│   ├── 03-bug-report.md            # Bagian 3: Laporan bug hunting (Markdown)
+│   ├── 03-bug-report.xlsx          # Bagian 3: Versi Excel dengan screenshot tertanam
+│   └── evidence/                   # Screenshot bukti visual bug
+├── features/
+│   └── auth_profile_navigation.feature # 12 skenario Gherkin BDD
+├── pages/                          # Komponen Page Object Model (POM)
+│   ├── Common.robot                # Setup/teardown browser & helper global
+│   ├── HomePage.robot              # Komponen navbar & katalog produk
+│   ├── LoginPage.robot             # Form login & validasi error
+│   ├── RegisterPage.robot          # Form pendaftaran akun
+│   ├── ProfilePage.robot           # Halaman user profile & edit data
+│   ├── ProductDetailPage.robot    # Detail produk & add to cart
+│   └── CheckoutPage.robot          # Keranjang, alamat, payment, & invoice
+├── resources/
+│   └── DataHelper.py               # Helper Python untuk data unik (timestamp email)
+├── results/                        # Output log & report eksekusi test
+└── tests/                          # Test suite otomasi
+    ├── 01_register.robot           # Test registrasi user baru (dinamis)
+    ├── 02_login_data_driven.robot  # Test login data-driven (positif & negatif)
+    ├── 03_edit_profile.robot       # Test update profil & verifikasi simpan
+    └── 04_e2e_checkout.robot       # Test E2E checkout hingga invoice
 ```
 
 ---
 
-## 🎯 Pemetaan Deliverables
+## 📌 Pemetaan Deliverables
 
-Semua instruksi pada dokumen soal teknis telah dipenuhi pada lokasi file berikut:
-
-| Bagian | Deskripsi Soal | File Deliverable | Status |
-| :--- | :--- | :--- | :---: |
-| **Bagian 1** (35%) | File Gherkin / BDD (`.feature`) | [`features/auth_profile_navigation.feature`](file:///c:/genesis-sage-automation/logique-qa-assessment/features/auth_profile_navigation.feature) | ✅ **100% Selesai** |
-| **Bagian 1** (35%) | Test Case Document (Excel, PDF, MD) | [`docs/01-test-design.xlsx`](file:///c:/genesis-sage-automation/logique-qa-assessment/docs/01-test-design.xlsx)<br>[`docs/01-test-design.pdf`](file:///c:/genesis-sage-automation/logique-qa-assessment/docs/01-test-design.pdf)<br>[`docs/01-test-design.md`](file:///c:/genesis-sage-automation/logique-qa-assessment/docs/01-test-design.md) | ✅ **100% Selesai (Paritas Penuh)** |
-| **Bagian 2** (35%) | Framework & Script Automation | [`tests/`](file:///c:/genesis-sage-automation/logique-qa-assessment/tests/) & [`pages/`](file:///c:/genesis-sage-automation/logique-qa-assessment/pages/) | ✅ **100% Selesai (5/5 PASS)** |
-| **Bagian 2** (35%) | Test Report (HTML Report) | [`results/report.html`](file:///c:/genesis-sage-automation/logique-qa-assessment/results/report.html)<br>[`results/log.html`](file:///c:/genesis-sage-automation/logique-qa-assessment/results/log.html) | ✅ **Ter-generate Sempurna** |
-| **Bagian 3** (30%) | Bug Hunting Report + Evidence | [`docs/03-bug-report.xlsx`](file:///c:/genesis-sage-automation/logique-qa-assessment/docs/03-bug-report.xlsx) *(Excel + Embedded Screenshots)*<br>[`docs/03-bug-report.md`](file:///c:/genesis-sage-automation/logique-qa-assessment/docs/03-bug-report.md)<br>[`docs/evidence/`](file:///c:/genesis-sage-automation/logique-qa-assessment/docs/evidence/) | ✅ **7 Bug Terverifikasi** |
-
-
----
-
-## 💻 Prasyarat & Lingkungan
-
-Pastikan sistem penguji memiliki komponen berikut:
-- **Python**: Versi `3.10` atau `3.11` (direkomendasikan)
-- **Google Chrome**: Versi stabil terbaru
-- **ChromeDriver**: Tidak perlu diunduh manual; Selenium 4 / SeleniumLibrary 6.2.0 menggunakan Selenium Manager bawaan untuk mendeteksi dan mengunduh driver yang sesuai secara otomatis.
+| Bagian | Item Tugas | Lokasi File |
+| :--- | :--- | :--- |
+| **Bagian 1 (35%)** | BDD Scenarios (`.feature`) | `features/auth_profile_navigation.feature` |
+| | Test Case Document | `docs/01-test-design.md`, `.xlsx`, `.pdf` |
+| **Bagian 2 (35%)** | Automation Script & Framework | `tests/` & `pages/` |
+| | Laporan Hasil Otomasi | `docs/02-automation-result.md` |
+| | Test Execution Report | `results/report.html` & `results/log.html` |
+| **Bagian 3 (30%)** | Bug Hunting Report | `docs/03-bug-report.md` & `docs/03-bug-report.xlsx` |
+| | Screenshot Evidence | `docs/evidence/` |
 
 ---
 
-## 🚀 Panduan Instalasi & Setup
+## ⚙️ Prasyarat & Versi Tool
 
-1. **Clone atau Buka Direktori Repositori:**
+- **Python**: Versi `3.10` atau `3.11`
+- **Google Chrome**: Versi terbaru
+- **Robot Framework**: `7.0`
+- **SeleniumLibrary**: `6.2.0`
+- **Selenium**: `4.32.0` (ChromeDriver dikelola otomatis via Selenium Manager bawaan, tidak perlu download driver manual)
+
+---
+
+## 🚀 Panduan Setup & Instalasi
+
+1. **Clone repository dan masuk ke folder project:**
    ```bash
-   cd c:/genesis-sage-automation/logique-qa-assessment
+   git clone <URL_REPOSITORY>
+   cd <NAMA_FOLDER_REPO>
    ```
 
-2. **Buat & Aktifkan Python Virtual Environment (Disarankan):**
-   *Pada Windows (PowerShell):*
-   ```powershell
-   python -m venv venv
-   .\venv\Scripts\Activate.ps1
-   ```
-   *Pada Linux / macOS:*
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   ```
+2. **Buat dan aktifkan virtual environment:**
+   - *Windows (PowerShell):*
+     ```powershell
+     python -m venv venv
+     .\venv\Scripts\Activate.ps1
+     ```
+   - *Linux / macOS:*
+     ```bash
+     python3 -m venv venv
+     source venv/bin/activate
+     ```
 
-3. **Install Dependensi:**
+3. **Install dependensi:**
    ```bash
    pip install -r requirements.txt
    ```
 
 ---
 
-## ⚡ Cara Menjalankan Test (1-Command Run)
+## ▶️ Cara Menjalankan Test
 
-### 1. Menjalankan Seluruh Test Suite (Rekomendasi Default — Headless)
-Jalankan satu perintah ini di root direktori project:
+### 1. Menjalankan Seluruh Test Suite (1-Command Run)
+Secara default, test akan berjalan dalam mode **Headless** (cepat dan cocok untuk CI/CD):
 ```bash
 robot -d results tests/
 ```
-*Perintah ini akan mengeksekusi 4 suite (5 skenario pengujian) secara otomatis dalam mode headless yang cepat, stabil, dan ramah lingkungan CI/CD.*
 
----
-
-### 2. Menjalankan Test Suite Tertentu
-Jika ingin menjalankan suite spesifik:
-- **Registrasi Akun Baru:**
+### 2. Menjalankan dalam Mode Headed (Browser Terlihat)
+Ada dua cara mudah jika ingin melihat browser saat test berjalan:
+- **Lewat CLI flag (tanpa ubah kode):**
   ```bash
-  robot -d results tests/01_register.robot
+  robot -v HEADLESS:false -d results tests/
   ```
-- **Login Data-Driven (Membaca file JSON):**
-  ```bash
-  robot -d results tests/02_login_data_driven.robot
-  ```
-- **Edit & Update Profil Pengguna:**
-  ```bash
-  robot -d results tests/03_edit_profile.robot
-  ```
-- **End-to-End (E2E) Pembelian Produk hingga Invoice:**
-  ```bash
-  robot -d results tests/04_e2e_checkout.robot
-  ```
+- **Atau ubah setup di file test:**  
+  Ubah `Test Setup    Open Application Browser` menjadi `Test Setup    CHROME` pada bagian `*** Settings ***` file test terkait.
 
----
-
-### 3. Menjalankan Berdasarkan Tag Pengujian
-Framework dilengkapi dengan penandaan tag yang terstruktur:
-- **Smoke Tests:**
-  ```bash
-  robot -i smoke -d results tests/
-  ```
-- **Regression Tests:**
-  ```bash
-  robot -i regression -d results tests/
-  ```
-- **E2E Flow:**
-  ```bash
-  robot -i e2e -d results tests/
-  ```
-
----
-
-## 🖥️ Fleksibilitas Headed vs Headless
-
-Framework ini dirancang sangat fleksibel sehingga pengguna dapat berpindah antara mode **Headless** (tanpa browser visual) dan **Headed** (browser visual terlihat) dengan sangat mudah melalui 2 metode:
-
-### Metode 1: Lewat Parameter Command-Line (Tanpa Mengubah Kode)
-Cukup tambahkan flag `-v HEADLESS:false`:
+### 3. Menjalankan Suite Spesifik
 ```bash
-robot -v HEADLESS:false -d results tests/
+robot -d results tests/01_register.robot
+robot -d results tests/02_login_data_driven.robot
+robot -d results tests/03_edit_profile.robot
+robot -d results tests/04_e2e_checkout.robot
 ```
-*Browser Chrome visual akan langsung terbuka di layar Anda selama pengujian berjalan.*
 
-### Metode 2: Mengubah Keyword Setup di File Test
-Pada bagian `*** Settings ***` di file test manapun, Anda dapat langsung mengetikkan `CHROME`:
-```robot
-*** Settings ***
-# Ganti dari:
-# Test Setup       Open Application Browser
-# Menjadi:
-Test Setup          CHROME
-Test Teardown       Close Application Browser
+### 4. Menjalankan Berdasarkan Tag
+```bash
+robot -i smoke -d results tests/
+robot -i regression -d results tests/
+robot -i e2e -d results tests/
 ```
-*Keyword `CHROME` telah didefinisikan di `pages/Common.robot` untuk secara instan meluncurkan browser visual dengan window maximised.*
 
 ---
 
 ## 📊 Cara Melihat Test Report
 
-Setelah eksekusi selesai, Robot Framework otomatis menghasilkan laporan interaktif di folder `results/`:
+Setelah test selesai dieksekusi, Robot Framework akan otomatis membuat file report di folder `results/`:
 
-1. **Buka Laporan Ringkasan (Report):**
-   - File: `results/report.html`
-   - Berisi grafik ringkasan persentase PASS/FAIL, durasi pengujian, dan status per test suite.
-   - Buka langsung di browser:
-     ```powershell
-     start results/report.html
-     ```
+- **Ringkasan Eksekutif (Report):** Buka file `results/report.html` di browser untuk melihat ringkasan status pass/fail dan durasi test.
+- **Log Detail Step-by-Step (Log):** Buka file `results/log.html` untuk melihat detail tiap step keyword, value variabel, dan pesan error jika ada kegagalan.
 
-2. **Buka Laporan Detail & Troubleshooting (Log):**
-   - File: `results/log.html`
-   - Berisi catatan hierarkis langkah per langkah, nilai variabel runtime, response interaksi DOM, dan screenshot kegagalan (jika ada).
-   - Buka langsung di browser:
-     ```powershell
-     start results/log.html
-     ```
+Contoh buka langsung lewat terminal (Windows):
+```powershell
+start results/report.html
+```
 
 ---
 
-## 💡 Justifikasi Pemilihan Tools & Library
+## 💡 Alasan Pemilihan Tools & Desain
 
-Pemilihan teknologi otomasi didasarkan pada analisis mendalam terhadap kebutuhan teknis dan operasional:
-
-1. **Robot Framework 7.0:**
-   - **Keterbacaan Tinggi & Abstraksi Keyword-Driven:** Memungkinkan tim QA, Developer, dan Product Owner memahami skenario pengujian tanpa harus membaca detail implementasi kode internal.
-   - **Laporan Bawaan yang Sangat Komprehensif:** Tidak memerlukan integrasi plugin pihak ketiga (seperti Allure) untuk mendapatkan grafik metrik dan log step-by-step yang rapi.
-   - **Modular & Extensible:** Integrasi mulus antara sintaks Robot Framework dan modul logika Python kustom (`resources/DataHelper.py`).
-   - **Adopsi Industri Luas:** Robot Framework merupakan standar de-facto yang telah terbukti kehandalannya di berbagai perusahaan multinasional dan digital agency.
-
-2. **SeleniumLibrary 6.2.0 & Selenium 4:**
-   - **Dukungan W3C WebDriver Baku:** Mendukung penanganan elemen web modern, AJAX rendering dinamis, modal backdrop, dan interaksi form kompleks.
-   - **Zero-Config WebDriver:** Dilengkapi dengan driver management otomatis sehingga reviewer tidak perlu repot mencari versi ChromeDriver manual.
-
-3. **Page Object Model (POM):**
-   - Menjamin prinsip **DRY (Don't Repeat Yourself)** dan kemudahan pemeliharaan (*maintainability*). Perubahan selector locator pada halaman web hanya memerlukan perbaikan pada 1 file page terkait.
-
-4. **Data-Driven Architecture:**
-   - Pemisahan data pengujian dari kode skenario (menggunakan `data/login_test_data.json`) memudahkan penambahan *edge cases* baru tanpa risiko regresi skrip.
+1. **Robot Framework & SeleniumLibrary:**
+   - Sintaks berbasis keyword membuat skenario mudah dibaca oleh non-programmer maupun tim produk.
+   - Built-in reporting (`report.html` dan `log.html`) sudah sangat informatif dan lengkap tanpa butuh library reporter tambahan.
+   - Selenium 4 memiliki driver management otomatis, sehingga siap dijalankan di mesin baru tanpa setup path ChromeDriver.
+2. **Page Object Model (POM):**
+   - Selector elemen dipusatkan di folder `pages/`. Jika ada perubahan selector pada web target, perbaikan hanya perlu dilakukan di satu file page terkait tanpa menyentuh file test.
+3. **Data-Driven Testing (DDT):**
+   - Skenario pengujian login negatif menggunakan data eksternal dari `data/login_test_data.json` agar mudah ditambah atau dimodifikasi tanpa mengubah alur script.
+4. **Explicit & Dynamic Wait:**
+   - Tidak menggunakan *hardcoded sleep* (`Sleep`). Semua interaksi menggunakan explicit wait (`Wait Until Element Is Visible`, `Wait Until Page Contains Element`) agar eksekusi stabil dan tidak flaky.
 
 ---
 
-## 🔍 Asumsi & Batasan (Assumptions & Limitations)
+## 🔍 Asumsi & Keterbatasan
 
-1. **Lingkungan Pengujian Target:**
-   - Pengujian otomasi Bagian 2 ditargetkan pada aplikasi stabil `https://practicesoftwaretesting.com`.
-   - Bug hunting Bagian 3 ditargetkan khusus pada domain buggy `https://with-bugs.practicesoftwaretesting.com`.
-2. **Penanganan Data Akun Registrasi:**
-   - Sistem aplikasi target memvalidasi keunikan email pada proses registrasi. Framework menggunakan utility `Generate Unique Email` berbasis timestamp presisi milidetik agar eksekusi test bersifat idempoten dan tidak pernah gagal karena email terduplikasi.
-3. **Simulasi Pembayaran E2E:**
-   - Pada alur checkout, pengujian memilih metode pembayaran `Cash on Delivery` atau `Bank Transfer` untuk memvalidasi alur pesanan hingga terbentuk nomor invoice resmi tanpa membutuhkan integrasi gateway pihak ketiga yang sebenarnya.
-4. **Latency Jaringan Publik:**
-   - Mengingat server target adalah server publik demo, framework menerapkan timeout implisit dan eksplisit yang adaptif (10 - 15 detik) untuk menghindari *false negative* akibat fluktuasi jaringan.
-
----
-
-## ✅ Checklist Verifikasi Sebelum Submit
-
-Berdasarkan lembar panduan penilaian pada halaman 5 dokumen teknis:
-
-- [x] **File Gherkin (.feature)** lengkap dan mengikuti format BDD yang benar (`features/auth_profile_navigation.feature`).
-- [x] **Test Case Document** lengkap mencakup preconditions, steps, expected result, dan priority (`docs/01-test-design.md`, `.xlsx`, `.pdf`).
-- [x] **100% Paritas Format** antara Markdown, Excel, dan PDF untuk dokumen Test Design.
-- [x] **Framework automation** dapat dijalankan dengan 1 perintah tunggal (`robot -d results tests/`).
-- [x] **Dukungan Headless & Headed** tersedia via command-line `-v HEADLESS:false` atau keyword `CHROME`.
-- [x] **Semua test script PASS** saat dijalankan (5/5 PASS, 100% success rate).
-- [x] **Test report** ter-generate dengan rapi dan lengkap (`results/report.html` dan `results/log.html`).
-- [x] **Bug report** terdokumentasi lengkap dengan severity, priority, steps to reproduce, actual vs expected, dan bukti visual screenshot (`docs/03-bug-report.md`, `docs/03-bug-report.xlsx` & `docs/evidence/`).
-- [x] **README.md** jelas, terstruktur, profesional, dan mudah dipahami.
-- [x] **Riwayat Commit Git** granular, bertahap, dan deskriptif mengikuti konvensi Conventional Commits.
-
+1. **Data Akun Registrasi:**  
+   Karena server memvalidasi keunikan email pada database, email registrasi di-generate secara dinamis menggunakan timestamp presisi milidetik (`resources/DataHelper.py`) agar test dapat dijalankan berulang kali tanpa bentrok data.
+2. **Alur Checkout E2E:**  
+   Metode pembayaran yang dipilih pada skenario E2E adalah *Cash on Delivery* agar pesanan dapat diselesaikan sampai invoice terbentuk tanpa perlu input data kartu kredit live.
+3. **Target Aplikasi Bagian 3:**  
+   Exploratory testing (Bagian 3) dilakukan pada subdomain `https://with-bugs.practicesoftwaretesting.com` yang memang dikonfigurasi memiliki bug bawaan dari pembuat aplikasi demo.
