@@ -1127,9 +1127,9 @@ def build_pdf(html_path, pdf_path):
         os.remove(html_path)
 
 if __name__ == "__main__":
-    excel_path = "c:/genesis-sage-automation/logique-qa-assessment/docs/01-test-design.xlsx"
-    html_temp = "c:/genesis-sage-automation/logique-qa-assessment/docs/temp_print.html"
-    pdf_path = "c:/genesis-sage-automation/logique-qa-assessment/docs/01-test-design.pdf"
+    excel_path = "docs/01-test-design.xlsx"
+    html_temp = "docs/temp_print.html"
+    pdf_path = "docs/01-test-design.pdf"
     
     print("Building unified Excel...")
     build_excel(excel_path)
