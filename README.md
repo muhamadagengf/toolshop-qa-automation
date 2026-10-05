@@ -6,7 +6,7 @@
 [![Tests](https://img.shields.io/badge/Automation%20Status-5%2F5%20PASS%20(100%25)-success.svg)]()
 [![License](https://img.shields.io/badge/License-MIT-lightgrey.svg)]()
 
-Repositori ini berisi solusi lengkap untuk **Technical Assessment QA Automation Engineer** di **PT. LOGIQUE Digital Indonesia**. Seluruh bagian teknis (Bagian 1, Bagian 2, Bagian 3, dan Bagian 4 Bonus) telah diselesaikan secara komprehensif, modular, dan mengikuti standar industri *quality engineering*.
+Repositori ini berisi solusi lengkap untuk **Technical Assessment QA Automation Engineer** di **PT. LOGIQUE Digital Indonesia**. Seluruh bagian teknis inti (**Bagian 1: Test Design**, **Bagian 2: Web Automation Framework**, dan **Bagian 3: Bug Hunting Report**) telah diselesaikan secara komprehensif, modular, dan mengikuti standar industri *quality engineering*.
 
 ---
 
@@ -70,9 +70,6 @@ logique-qa-assessment/
 │   ├── ProductDetailPage.robot    # Detail produk, kuantitas, add-to-cart, toast alert
 │   └── CheckoutPage.robot          # Keranjang belanja, stepper multi-step, payment & invoice
 │
-├── performance/                    # Bagian 4 (Bonus): Performance Testing
-│   └── load_test_products.js       # Script k6 load test API (10-20 VUs, duration ~1m)
-│
 ├── resources/                      # Library kustom & utility pendukung
 │   └── DataHelper.py               # Generator data dinamis (timestamp email, unique data)
 │
@@ -104,7 +101,7 @@ Semua instruksi pada dokumen soal teknis telah dipenuhi pada lokasi file berikut
 | **Bagian 2** (35%) | Framework & Script Automation | [`tests/`](file:///c:/genesis-sage-automation/logique-qa-assessment/tests/) & [`pages/`](file:///c:/genesis-sage-automation/logique-qa-assessment/pages/) | ✅ **100% Selesai (5/5 PASS)** |
 | **Bagian 2** (35%) | Test Report (HTML Report) | [`results/report.html`](file:///c:/genesis-sage-automation/logique-qa-assessment/results/report.html)<br>[`results/log.html`](file:///c:/genesis-sage-automation/logique-qa-assessment/results/log.html) | ✅ **Ter-generate Sempurna** |
 | **Bagian 3** (30%) | Bug Hunting Report + Evidence | [`docs/03-bug-report.xlsx`](file:///c:/genesis-sage-automation/logique-qa-assessment/docs/03-bug-report.xlsx) *(Excel + Embedded Screenshots)*<br>[`docs/03-bug-report.md`](file:///c:/genesis-sage-automation/logique-qa-assessment/docs/03-bug-report.md)<br>[`docs/evidence/`](file:///c:/genesis-sage-automation/logique-qa-assessment/docs/evidence/) | ✅ **7 Bug Terverifikasi** |
-| **Bagian 4** (Bonus) | Script Performance Test (k6) | [`performance/load_test_products.js`](file:///c:/genesis-sage-automation/logique-qa-assessment/performance/load_test_products.js) | ✅ **Siap Dijalankan** |
+
 
 ---
 
@@ -275,30 +272,6 @@ Pemilihan teknologi otomasi didasarkan pada analisis mendalam terhadap kebutuhan
 
 ---
 
-## ⚡ Bagian 4 (Bonus): Performance Test dengan k6
-
-Script pengujian performa telah disediakan di `performance/load_test_products.js`.
-
-### Skenario Pengujian:
-- **Target Endpoint:** `GET https://api.practicesoftwaretesting.com/products`
-- **Virtual Users (VUs):** Ramp-up ke 10 VUs (15s) $\rightarrow$ sustain pada 20 VUs (30s) $\rightarrow$ ramp-down ke 0 VUs (15s)
-- **Kriteria Ambang Batas (Thresholds):**
-  - $p(95) < 1500\text{ ms}$
-  - Average response time $< 800\text{ ms}$
-  - Error rate $< 1\%$
-
-### Cara Eksekusi:
-Jika penguji memiliki [k6](https://k6.io/) terpasang:
-```bash
-k6 run performance/load_test_products.js
-```
-Atau dapat dieksekusi melalui Docker tanpa instalasi lokal:
-```bash
-docker run --rm -i grafana/k6 run - < performance/load_test_products.js
-```
-
----
-
 ## ✅ Checklist Verifikasi Sebelum Submit
 
 Berdasarkan lembar panduan penilaian pada halaman 5 dokumen teknis:
@@ -310,7 +283,7 @@ Berdasarkan lembar panduan penilaian pada halaman 5 dokumen teknis:
 - [x] **Dukungan Headless & Headed** tersedia via command-line `-v HEADLESS:false` atau keyword `CHROME`.
 - [x] **Semua test script PASS** saat dijalankan (5/5 PASS, 100% success rate).
 - [x] **Test report** ter-generate dengan rapi dan lengkap (`results/report.html` dan `results/log.html`).
-- [x] **Bug report** terdokumentasi lengkap dengan severity, priority, steps to reproduce, actual vs expected, dan bukti visual screenshot (`docs/03-bug-report.md` & `docs/evidence/`).
-- [x] **Script Performance Test (k6)** disertakan sebagai nilai tambah (`performance/load_test_products.js`).
+- [x] **Bug report** terdokumentasi lengkap dengan severity, priority, steps to reproduce, actual vs expected, dan bukti visual screenshot (`docs/03-bug-report.md`, `docs/03-bug-report.xlsx` & `docs/evidence/`).
 - [x] **README.md** jelas, terstruktur, profesional, dan mudah dipahami.
 - [x] **Riwayat Commit Git** granular, bertahap, dan deskriptif mengikuti konvensi Conventional Commits.
+
